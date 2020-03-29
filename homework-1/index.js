@@ -1,22 +1,30 @@
 const fs = require('fs');
 const path = require('path');
 
-const dir = process.cwd();
-const args = process.argv.slice(2)
+const { program } = require('commander');
 
-if (!args[0] || !args[1]) {
-    return console.log('Необходимо ввести относительные пути: <source> <target>')
+const dir = process.cwd();
+
+program.version('0.0.1');
+
+program
+    .option('-r, --remove', 'remove source folder')
+    .requiredOption('-s, --source <path>', 'must have source path', createPath)
+    .requiredOption('-t, --target <path>', 'must have target path', createPath)
+    .parse(process.argv);
+
+function createPath(str) {
+    return path.join(dir, str)
 }
 
-const sourcePath = path.join(dir, args[0]);
-const targetPath = path.join(dir, args[1]);
 
+const {source: sourcePath, target: targetPath}  = program
 
 start(sourcePath, targetPath, (err) => {
     if (err) {
         console.log({err})
     }
-    if (args[2]) {
+    if (program.remove) {
         removeDirectoryRecursive(sourcePath, () => console.log('deleted'))
     }
 });

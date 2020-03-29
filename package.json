@@ -1,0 +1,22 @@
+{
+  "name": "homework",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vkxedeen/nodejs_loftschool.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vkxedeen/nodejs_loftschool/issues"
+  },
+  "homepage": "https://github.com/vkxedeen/nodejs_loftschool#readme",
+  "dependencies": {
+    "commander": "^5.0.0"
+  }
+}
