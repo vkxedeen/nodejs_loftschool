@@ -5,16 +5,15 @@ const dir = process.cwd();
 const args = process.argv.slice(2)
 
 if (!args[0] || !args[1]) {
-    return console.log('Необходимо ввести пути')
+    return console.log('Необходимо ввести относительные пути: <source> <target>')
 }
 
 const sourcePath = path.join(dir, args[0]);
 const targetPath = path.join(dir, args[1]);
-debugger
 
 
 start(sourcePath, targetPath, (err) => {
-    if(err) {
+    if (err) {
         console.log({err})
     }
     if (args[2]) {
@@ -27,11 +26,11 @@ function start(source, target, cb) {
         if (err) {
             throw new Error(err.message)
         }
-        reader(source, target, cb)
+        create(source, target, cb)
     })
 }
 
-function reader(source, target, cb) {
+function create(source, target, cb) {
     return fs.readdir(source, (err, res) => {
         if (err) {
             throw new Error(err.message)
@@ -39,9 +38,8 @@ function reader(source, target, cb) {
         for (let i = 0; i < res.length; i++) {
             const newSource = path.join(source, res[i]);
             const newTarget = path.join(target);
-            const stats = fs.statSync(newSource);
-            if (stats.isDirectory()) {
-                reader(newSource, newTarget, cb)
+            if (fs.statSync(newSource).isDirectory()) {
+                create(newSource, newTarget, cb)
             } else {
                 const name = res[i][0];
                 const dir = path.join(target, name);
@@ -51,7 +49,7 @@ function reader(source, target, cb) {
                     }
                     const target = path.join(dir, res[i]);
                     fs.copyFile(newSource, target, () => {
-                        console.log('copied');
+                        console.log(name + 'copied');
                         cb()
                     })
                 })
@@ -75,16 +73,15 @@ function removeDirectoryRecursive(dir, cb) {
             throw new Error(err.message)
         }
 
-        let wait = res.length,
-            count = 0,
-            folderDone = function (err) {
-                count++;
-                if (count >= wait || err) {
-                    fs.rmdir(dir, cb);
-                }
-            };
+        let count = 0;
+        const folderDone = (err) => {
+            count++;
+            if (count >= res.length || err) {
+                fs.rmdir(dir, cb);
+            }
+        };
 
-        if (!wait) {
+        if (!res.length) {
             folderDone();
             return;
         }
