@@ -10,8 +10,7 @@ http.createServer(async (req, res) => {
 
     const timer = setInterval(currentTime(), interval);
 
-    setTimeout(() => {
-        clearInterval(timer);
+    setTimeout(() => {        clearInterval(timer);
         res.writeHead(200, {'Content-Type': 'text/html'});
         res.end(currentTime())
     }, duration)
