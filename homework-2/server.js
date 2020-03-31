@@ -1,23 +1,19 @@
 const http = require('http');
-const EventEmitter = require('events');
 
 const interval = process.env.INTERVAL || 2000;
-const duration = process.env.DURATION || 20000;
+const duration = process.env.DURATION || 10000;
 
-http.createServer(function (req, res) {
-    let last;
-    const showTime = () => {
-        last = new Date().toUTCString();
-        console.log(last)
-    };
+http.createServer(async (req, res) => {
+    const currentTime = () => new Date().toUTCString();
 
-    showTime();
-    const timer = setInterval(showTime, interval)
+    console.log(currentTime());
+
+    const timer = setInterval(currentTime(), interval);
 
     setTimeout(() => {
-        clearInterval(timer)
+        clearInterval(timer);
         res.writeHead(200, {'Content-Type': 'text/html'});
-        res.end(last)
+        res.end(currentTime())
     }, duration)
 
 }).listen(8080);
